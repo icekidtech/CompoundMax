@@ -6,7 +6,7 @@
 import { useState, useCallback } from "react";
 import { useAccount } from "wagmi";
 import { deployHandlerWithErrorHandling, parseTokenAmount } from "@/config/sdk";
-import type { HandlerDeploymentResult } from "@somnia-react/autonomous";
+import type { DeploymentResult } from "@somnia-react/autonomous";
 
 export interface DeploymentState {
   isLoading: boolean;
@@ -17,7 +17,7 @@ export interface DeploymentState {
 }
 
 export interface UseHandlerDeployReturn {
-  deploy: (params: DeploymentParams) => Promise<HandlerDeploymentResult | null>;
+  deploy: (params: DeploymentParams) => Promise<DeploymentResult | null>;
   state: DeploymentState;
   reset: () => void;
 }
@@ -44,7 +44,7 @@ export function useHandlerDeploy(): UseHandlerDeployReturn {
   });
 
   const deploy = useCallback(
-    async (params: DeploymentParams): Promise<HandlerDeploymentResult | null> => {
+    async (params: DeploymentParams): Promise<DeploymentResult | null> => {
       // Validate wallet connection
       if (!isConnected || !walletAddress) {
         const error = "Wallet not connected";
