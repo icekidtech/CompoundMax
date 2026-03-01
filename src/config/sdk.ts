@@ -7,7 +7,7 @@ import {
   deployAutoCompoundHandler,
   SubscriptionBuilder,
   createEventDecoder,
-  type HandlerDeploymentResult,
+  type DeploymentResult,
 } from "@somnia-react/autonomous";
 import AutoCompoundHandlerABI from "../abis/AutoCompoundHandler.json";
 
@@ -19,12 +19,13 @@ export { deployAutoCompoundHandler, SubscriptionBuilder, createEventDecoder };
 /**
  * Handler ABI for contract interactions via wagmi/viem
  */
-export const HANDLER_ABI = AutoCompoundHandlerABI as const;
+export const HANDLER_ABI = AutoCompoundHandlerABI;
 
 /**
  * Supported networks for deployment
  */
 export const SUPPORTED_NETWORKS = {
+  somniaTestnet: { id: 50312, name: "Somnia Testnet", rpcUrl: "https://dream-rpc.somnia.network" },
   ethereum: { id: 1, name: "Ethereum", rpcUrl: "https://eth.rpc.blxrbdn.com" },
   sepolia: { id: 11155111, name: "Sepolia", rpcUrl: "https://sepolia.infura.io/v3" },
   arbitrum: { id: 42161, name: "Arbitrum", rpcUrl: "https://arb1.arbitrum.io/rpc" },
@@ -41,7 +42,7 @@ export async function deployHandlerWithErrorHandling(
   ownerAddress: string
 ): Promise<{
   success: boolean;
-  data?: HandlerDeploymentResult;
+  data?: DeploymentResult;
   error?: string;
 }> {
   try {
@@ -83,8 +84,8 @@ export function createHandlerSubscription(
   try {
     const subscription = new SubscriptionBuilder(handlerAddress)
       .onEvent("CompoundTriggered(uint256,uint256)")
-      .fromChain(1) // Default to mainnet, can be overridden
-      .toChain(1)
+      .fromChain(50312) // Default to Somnia Testnet
+      .toChain(50312)
       .withAddress(rewardTokenAddress)
       .build();
 
