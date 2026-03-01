@@ -6,7 +6,7 @@
 import { useState, useCallback } from "react";
 import { useAccount } from "wagmi";
 import { deployHandlerWithErrorHandling, parseTokenAmount } from "@/config/sdk";
-import type { HandlerDeploymentResult } from "@somnia-react/autonomous-sdk";
+import type { HandlerDeploymentResult } from "@somnia-react/autonomous";
 
 export interface DeploymentState {
   isLoading: boolean;

@@ -1,6 +1,6 @@
 /**
  * SDK Configuration & Utilities
- * Initializes @somnia-react/autonomous-sdk for CompoundMax dApp
+ * Initializes @somnia-react/autonomous for CompoundMax dApp
  */
 
 import {
@@ -8,7 +8,7 @@ import {
   SubscriptionBuilder,
   createEventDecoder,
   type HandlerDeploymentResult,
-} from "@somnia-react/autonomous-sdk";
+} from "@somnia-react/autonomous";
 import AutoCompoundHandlerABI from "../abis/AutoCompoundHandler.json";
 
 /**
