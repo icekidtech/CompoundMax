@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAccount } from "wagmi";
 import { ArrowLeft, Clipboard, Zap, Info, Loader2 } from "lucide-react";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -49,6 +50,7 @@ export default function Deploy() {
   const [customReward, setCustomReward] = useState("");
   const [threshold, setThreshold] = useState(100);
   const [step, setStep] = useState<1 | 2>(1);
+  const [selectedNetwork, setSelectedNetwork] = useState(SUPPORTED_CHAINS[0].id.toString());
 
   const selectedCompound = compoundToken === "custom" ? customCompound : compoundToken;
   const selectedReward = rewardToken === "custom" ? customReward : rewardToken;
@@ -80,6 +82,7 @@ export default function Deploy() {
 
       if (result && result.address) {
         // Save to localStorage
+        const chainName = SUPPORTED_CHAINS.find(c => c.id.toString() === selectedNetwork)?.name || "Unknown";
         addHandler({
           address: result.address,
           name,
@@ -87,7 +90,7 @@ export default function Deploy() {
           compoundToken: selectedCompound,
           rewardToken: selectedReward,
           threshold,
-          network: "ethereum",
+          network: chainName,
           status: "active",
           deployedAt: Date.now(),
           stats: { totalCompounds: 0, grossYield: 0, feesPaid: 0, netYield: 0, lastCompound: null },
@@ -149,6 +152,26 @@ export default function Deploy() {
               {name.length > 0 && name.length < 2 && (
                 <p className="text-xs text-destructive">Name must be at least 2 characters</p>
               )}
+            </div>
+
+            {/* Network Selection */}
+            <div className="space-y-2">
+              <Label>Network</Label>
+              <Select value={selectedNetwork} onValueChange={setSelectedNetwork}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {SUPPORTED_CHAINS.map((chain) => (
+                    <SelectItem key={chain.id} value={chain.id.toString()}>
+                      <span className="flex items-center gap-2">
+                        <span>{chain.icon}</span>
+                        <span>{chain.name}</span>
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Vault Address */}
