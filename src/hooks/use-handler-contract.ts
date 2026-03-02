@@ -4,7 +4,7 @@
  */
 
 import { useState, useCallback } from "react";
-import { useContractRead, useContractWrite, useAccount } from "wagmi";
+import { useReadContract, useWriteContract, useAccount } from "wagmi";
 import { HANDLER_ABI } from "@/config/sdk";
 import type { Address } from "viem";
 
@@ -42,43 +42,43 @@ export function useHandlerContract(handlerAddress?: Address | string) {
   const [error, setError] = useState<string | null>(null);
 
   // Read reward balance
-  const { data: rewardBalance, refetch: refetchBalance } = useContractRead({
+  const { data: rewardBalance, refetch: refetchBalance } = useReadContract({
     address: handlerAddress as Address,
     abi: HANDLER_ABI,
     functionName: "getRewardBalance",
-    enabled: !!handlerAddress && isConnected,
+    query: { enabled: !!handlerAddress && isConnected },
   });
 
   // Read shouldCompound
-  const { data: shouldCompound, refetch: refetchShouldCompound } = useContractRead({
+  const { data: shouldCompound, refetch: refetchShouldCompound } = useReadContract({
     address: handlerAddress as Address,
     abi: HANDLER_ABI,
     functionName: "shouldCompound",
-    enabled: !!handlerAddress && isConnected,
+    query: { enabled: !!handlerAddress && isConnected },
   });
 
   // Read minCompoundAmount
-  const { data: minCompoundAmount, refetch: refetchMinAmount } = useContractRead({
+  const { data: minCompoundAmount, refetch: refetchMinAmount } = useReadContract({
     address: handlerAddress as Address,
     abi: HANDLER_ABI,
     functionName: "minCompoundAmount",
-    enabled: !!handlerAddress && isConnected,
+    query: { enabled: !!handlerAddress && isConnected },
   });
 
   // Read owner
-  const { data: owner, refetch: refetchOwner } = useContractRead({
+  const { data: owner, refetch: refetchOwner } = useReadContract({
     address: handlerAddress as Address,
     abi: HANDLER_ABI,
     functionName: "owner",
-    enabled: !!handlerAddress && isConnected,
+    query: { enabled: !!handlerAddress && isConnected },
   });
 
   // Read compoundsExecuted
-  const { data: totalCompounds, refetch: refetchTotalCompounds } = useContractRead({
+  const { data: totalCompounds, refetch: refetchTotalCompounds } = useReadContract({
     address: handlerAddress as Address,
     abi: HANDLER_ABI,
     functionName: "compoundsExecuted",
-    enabled: !!handlerAddress && isConnected,
+    query: { enabled: !!handlerAddress && isConnected },
   });
 
   // Update state when data changes
