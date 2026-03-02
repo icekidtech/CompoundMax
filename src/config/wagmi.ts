@@ -1,5 +1,6 @@
-import { http, createConfig, defineChain } from 'wagmi';
+import { http, createConfig } from 'wagmi';
 import { mainnet, arbitrum, polygon, base } from 'wagmi/chains';
+import { defineChain } from 'viem';
 
 /**
  * Somnia Testnet chain configuration
