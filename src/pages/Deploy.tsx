@@ -84,7 +84,7 @@ export default function Deploy() {
         // Save to localStorage
         const chainName = SUPPORTED_CHAINS.find(c => c.id.toString() === selectedNetwork)?.name || "Unknown";
         addHandler({
-          address: result.address,
+          address: result.address.toLowerCase(),
           name,
           vaultAddress,
           compoundToken: selectedCompound,

@@ -44,17 +44,21 @@ export function useHandlers() {
   }, [handlers]);
 
   const addHandler = useCallback((handler: Handler) => {
-    setHandlers((prev) => [...prev, handler]);
+    // Normalize address to lowercase
+    const normalizedHandler = { ...handler, address: handler.address.toLowerCase() };
+    setHandlers((prev) => [...prev, normalizedHandler]);
   }, []);
 
   const updateHandler = useCallback((address: string, updates: Partial<Handler>) => {
+    const normalizedAddress = address.toLowerCase();
     setHandlers((prev) =>
-      prev.map((h) => (h.address === address ? { ...h, ...updates } : h))
+      prev.map((h) => (h.address.toLowerCase() === normalizedAddress ? { ...h, ...updates } : h))
     );
   }, []);
 
   const removeHandler = useCallback((address: string) => {
-    setHandlers((prev) => prev.filter((h) => h.address !== address));
+    const normalizedAddress = address.toLowerCase();
+    setHandlers((prev) => prev.filter((h) => h.address.toLowerCase() !== normalizedAddress));
   }, []);
 
   return { handlers, addHandler, updateHandler, removeHandler };

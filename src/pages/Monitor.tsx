@@ -17,7 +17,7 @@ export default function Monitor() {
   const { toast } = useToast();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  const handler = handlers.find((h) => h.address === address);
+  const handler = handlers.find((h) => h.address.toLowerCase() === address?.toLowerCase());
 
   // Auto-refresh every 15 seconds
   const [, setTick] = useState(0);

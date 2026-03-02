@@ -19,6 +19,9 @@ const NAV_LINKS = [
   { label: "Deploy", path: "/deploy" },
   { label: "Docs", path: "/docs" },
   { label: "About", path: "/about" },
+  { label: "Settings", path: "/settings" },
+  { label: "Support", path: "/support" },
+  { label: "Report Bug", path: "/report-bug" },
 ];
 
 export function Navbar() {

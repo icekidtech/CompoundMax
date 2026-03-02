@@ -83,13 +83,32 @@ export default function Settings() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>Theme</Label>
-              <Select value={theme} onValueChange={setTheme}>
+              <Select
+                value={theme}
+                onValueChange={(value) => {
+                  setTheme(value as typeof theme);
+                  // Apply theme to HTML element
+                  if (value === "light") {
+                    document.documentElement.classList.add("light");
+                  } else if (value === "dark") {
+                    document.documentElement.classList.remove("light");
+                  } else {
+                    // System theme
+                    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+                    if (isDark) {
+                      document.documentElement.classList.remove("light");
+                    } else {
+                      document.documentElement.classList.add("light");
+                    }
+                  }
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="light">Light</SelectItem>
-                  <SelectItem value="dark">Dark (Current)</SelectItem>
+                  <SelectItem value="dark">Dark</SelectItem>
                   <SelectItem value="system">System</SelectItem>
                 </SelectContent>
               </Select>
