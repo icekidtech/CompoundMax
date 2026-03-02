@@ -1,20 +1,10 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useAccount, useDisconnect, useConnect } from "wagmi";
-import { injected } from "wagmi/connectors";
-import {
-  Zap,
-  Settings,
-  Copy,
-  ExternalLink,
-  LogOut,
-  ChevronDown,
-  Menu,
-  X,
-  Check,
-  Wallet,
-} from "lucide-react";
+import { Zap, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { WalletConnect } from "@/components/WalletConnect";
+import { useChainId, useSwitchChain } from "wagmi";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,41 +12,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/hooks/use-toast";
-import { SUPPORTED_CHAINS } from "@/config/wagmi";
-import { useChainId, useSwitchChain } from "wagmi";
+import { ChevronDown, Check } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "Dashboard", path: "/" },
-  { label: "Docs", path: "#docs" },
-  { label: "About", path: "#about" },
+  { label: "Dashboard", path: "/dashboard" },
+  { label: "Deploy", path: "/deploy" },
+  { label: "Docs", path: "/docs" },
+  { label: "About", path: "/about" },
 ];
-
-function truncateAddress(address: string) {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-}
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
   const location = useLocation();
-  const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { connect } = useConnect();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
-  const { toast } = useToast();
 
   const currentChain = SUPPORTED_CHAINS.find((c) => c.id === chainId) ?? SUPPORTED_CHAINS[0];
-
-  const copyAddress = () => {
-    if (address) {
-      navigator.clipboard.writeText(address);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-      toast({ title: "Address copied" });
-    }
-  };
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-border/50">
@@ -71,7 +42,7 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Center Nav */}
+        {/* Center Nav - Desktop */}
         <nav className="hidden md:flex items-center gap-1">
           {NAV_LINKS.map((link) => (
             <Link
@@ -93,9 +64,9 @@ export function Navbar() {
           {/* Network Selector */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="hidden sm:flex gap-1.5 border-border/50 bg-secondary/50">
+              <Button variant="outline" size="sm" className="hidden sm:flex gap-1.5">
                 <span className="text-xs">{currentChain.icon}</span>
-                <span className="text-xs">{currentChain.name}</span>
+                <span className="text-xs hidden sm:inline">{currentChain.name}</span>
                 <ChevronDown className="h-3 w-3 text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
@@ -104,76 +75,18 @@ export function Navbar() {
                 <DropdownMenuItem
                   key={chain.id}
                   onClick={() => switchChain?.({ chainId: chain.id })}
-                  className="gap-2"
+                  className="gap-2 cursor-pointer"
                 >
                   <span>{chain.icon}</span>
                   <span>{chain.name}</span>
-                  {chain.id === chainId && <Check className="h-3 w-3 ml-auto text-success" />}
+                  {chain.id === chainId && <Check className="h-3 w-3 ml-auto text-green-500" />}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Wallet */}
-          {isConnected && address ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-1.5 border-border/50 bg-secondary/50">
-                  <div className="h-2 w-2 rounded-full bg-success animate-pulse-glow" />
-                  <span className="font-mono text-xs">{truncateAddress(address)}</span>
-                  <ChevronDown className="h-3 w-3 text-muted-foreground" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-52">
-                <DropdownMenuItem onClick={copyAddress} className="gap-2">
-                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  {copied ? "Copied!" : "Copy Address"}
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <a
-                    href={`https://etherscan.io/address/${address}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="gap-2"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    View on Etherscan
-                  </a>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => disconnect()} className="gap-2 text-destructive">
-                  <LogOut className="h-4 w-4" />
-                  Disconnect
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button
-              size="sm"
-              onClick={() => connect({ connector: injected() })}
-              className="gap-1.5 glow-primary"
-            >
-              <Wallet className="h-4 w-4" />
-              <span className="hidden sm:inline">Connect Wallet</span>
-              <span className="sm:hidden">Connect</span>
-            </Button>
-          )}
-
-          {/* Settings */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground">
-                <Settings className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-44">
-              <DropdownMenuItem>App Settings</DropdownMenuItem>
-              <DropdownMenuItem>Documentation</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Report Bug</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Wallet Connect Button */}
+          <WalletConnect />
 
           {/* Mobile menu toggle */}
           <Button
@@ -205,20 +118,6 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            {/* Mobile network selector */}
-            <div className="flex items-center gap-2 px-3 py-2.5 sm:hidden">
-              {SUPPORTED_CHAINS.map((chain) => (
-                <button
-                  key={chain.id}
-                  onClick={() => switchChain?.({ chainId: chain.id })}
-                  className={`px-2 py-1 rounded text-xs ${
-                    chain.id === chainId ? "bg-primary/20 text-primary" : "text-muted-foreground"
-                  }`}
-                >
-                  {chain.icon} {chain.name}
-                </button>
-              ))}
-            </div>
           </nav>
         </div>
       )}
