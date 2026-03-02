@@ -8,7 +8,7 @@ import {
   SubscriptionBuilder,
   createEventDecoder,
   type DeploymentResult,
-} from "@somnia-react/autonomous";
+} from "@somnia-react/autonomous-sdk";
 import AutoCompoundHandlerABI from "../abis/AutoCompoundHandler.json";
 
 /**
